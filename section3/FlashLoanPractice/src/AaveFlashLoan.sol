@@ -32,7 +32,7 @@ contract AaveFlashLoan {
         address checker = abi.decode(params, (address));
 
         BalanceChecker(checker).checkBalance();
-        IERC20(USDC).approve(msg.sender, amount + premium);
+        IERC20(asset).approve(msg.sender, amount + premium);
         return true;
     }
 
