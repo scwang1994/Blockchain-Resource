@@ -23,12 +23,6 @@ contract FlashSwapLiquidate is IUniswapV2Callee {
         uint256 amount1,
         bytes calldata data
     ) external override {
-        require(sender == address(this), "Sender must be this contract");
-        require(
-            amount0 > 0 || amount1 > 0,
-            "amount0 or amount1 must be greater than 0"
-        );
-
         // TODO
     }
 
