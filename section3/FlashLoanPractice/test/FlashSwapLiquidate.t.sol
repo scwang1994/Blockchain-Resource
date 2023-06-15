@@ -6,33 +6,33 @@ import {Borrower} from "../src/Borrower.sol";
 import {FlashSwapLiquidate} from "../src/FlashSwapLiquidate.sol";
 
 contract FlashSwapLiquidateTest is Test {
-  IERC20 public DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
-  FlashSwapLiquidate public liquidator;
-  Borrower public borrower;
+    IERC20 public DAI = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F);
+    FlashSwapLiquidate public liquidator;
+    Borrower public borrower;
 
-  function setUp() public {
-    string memory rpc = vm.envString("MAINNET_RPC_URL");
-    vm.createSelectFork(rpc);
+    function setUp() public {
+        string memory rpc = vm.envString("MAINNET_RPC_URL");
+        vm.createSelectFork(rpc);
 
-    borrower = new Borrower();
-    // Collateral factor will be decrease after borrow,
-    // so that borrower can be liquidated.
-    // Borrower borrows USDC against DAI.
-    borrower.borrow();
-    
-    liquidator = new FlashSwapLiquidate(); 
+        borrower = new Borrower();
+        // Collateral factor will be decrease after borrow,
+        // so that borrower can be liquidated.
+        // Borrower borrows USDC against DAI.
+        borrower.borrow();
 
-    vm.label(address(borrower), "Borrower");
-    vm.label(address(liquidator), "Liquidator");
-  }
+        liquidator = new FlashSwapLiquidate();
 
-  function testFlashSwapLiquidate() public {
-    // Borrower borrowed 800k USDC
-    uint256 repayAmount = 400_000 * 10 ** 6;
+        vm.label(address(borrower), "Borrower");
+        vm.label(address(liquidator), "Liquidator");
+    }
 
-    liquidator.liquidate(address(borrower), repayAmount);
+    function testFlashSwapLiquidate() public {
+        // Borrower borrowed 800k USDC
+        uint256 repayAmount = 400_000 * 10 ** 6;
 
-    uint256 daiBalance = DAI.balanceOf(address(liquidator));
-    assertGt(daiBalance, 0);
-  }
+        liquidator.liquidate(address(borrower), repayAmount);
+
+        uint256 daiBalance = DAI.balanceOf(address(liquidator));
+        assertGt(daiBalance, 0);
+    }
 }
